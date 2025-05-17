@@ -1,0 +1,149 @@
+{% extends "layout.twig" %}
+
+{% block title %}
+	{{ user.username }}'s Post - Binsta
+{% endblock %}
+
+{% block content %}
+	<div class="single-post">
+		<div class="post post-detail">
+			<div class="post-header">
+				<a href="/profile?id={{ user.id }}" class="user-info">
+					<img src="/uploads/{{ user.profile_image }}" alt="{{ user.username }}" class="avatar" onerror="this.src='/uploads/{{ DEFAULT_PROFILE_IMAGE }}';">
+					<div class="user-details">
+						<span class="username">{{ user.username }}</span>
+						<span class="post-timestamp">{{ post.created_at|date("d M Y, H:i") }}</span>
+					</div>
+				</a>
+				<div class="post-options">
+					<a href="#" class="copy-code-btn" title="Kopieer code" data-post-id="{{ post.id }}">
+						<i class="fa-regular fa-copy"></i>
+					</a>
+				</div>
+			</div>
+
+			<div class="post-content">
+				<div class="language-badge">{{ post.language }}</div>
+				<pre><code class="{{ post.language }}">{{ post.code }}</code></pre>
+			</div>
+
+			<div class="post-actions-bar">
+				<div class="post-action">
+					<form action="/posts/like" method="post" class="like-form">
+						<input type="hidden" name="post_id" value="{{ post.id }}">
+						<button type="submit" class="btn-like{% if post.isLikedByUser(session.user_id) %} liked{% endif %}">
+							<i class="fa-solid fa-heart"></i>
+						</button>
+					</form>
+					{% set likes = post.getLikes() %}
+					<span class="likes-count">{{ likes }}</span>
+				</div>
+
+				<div class="post-action">
+					<span class="comment-count">
+						<i class="fa-solid fa-comment post-action-icon"></i>
+						<span class="post-action-count">{{ comments|length }}</span>
+					</span>
+				</div>
+
+				<div class="post-action">
+					<a href="#" class="share-link" title="Deel deze code">
+						<i class="fa-solid fa-share post-action-icon"></i>
+					</a>
+				</div>
+			</div>
+
+			<div class="post-footer">
+				{% if post.caption %}
+					<div class="post-caption">
+						<strong>{{ user.username }}</strong>
+						{{ post.caption }}
+					</div>
+				{% endif %}
+
+				<div class="comments-section">
+					<h3 class="section-title">Reacties</h3>
+
+					{% for comment in comments %}
+						<div class="comment">
+							{% if comment.user is defined and comment.user.id %}
+								<a href="/profile?id={{ comment.user.id }}" class="comment-user">{{ comment.user.username }}</a>
+							{% else %}
+								<span class="comment-user">Onbekende gebruiker</span>
+							{% endif %}
+							<span class="comment-content">{{ comment.content }}</span>
+							<div class="comment-time">{{ comment.created_at|date("d-m-Y, H:i") }}</div>
+						</div>
+					{% else %}
+						<div class="no-comments">
+							<p>Nog geen reacties. Wees de eerste!</p>
+						</div>
+					{% endfor %}
+
+					<form action="/comments/create" method="post" class="comment-form">
+						<input type="hidden" name="post_id" value="{{ post.id }}">
+						<input type="text" name="content" placeholder="Voeg een reactie toe...">
+						<button type="submit">Plaatsen</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<!-- Gerelateerde posts sectie -->
+		<div class="related-posts">
+			<h3 class="section-title">Meer van
+				{{ user.username }}</h3>
+			<div class="profile-posts compact">
+				{% for related_post in user.ownPost %}
+					{% if related_post.id != post.id %}
+						<div class="profile-post">
+							<a href="/posts/{{ related_post.id }}">
+								<div class="post-preview">
+									<pre><code class="{{ related_post.language }}">{{ related_post.code|slice(0, 100) }}</code></pre>
+									<div class="post-meta">
+										<span class="post-language">{{ related_post.language }}</span>
+										<span class="post-time">{{ related_post.created_at|date("j M Y") }}</span>
+									</div>
+								</div>
+							</a>
+						</div>
+					{% endif %}
+				{% else %}
+					<p class="no-related">Geen andere posts gevonden.</p>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+	<!-- Kopieer bevestiging toast -->
+	<div class="copy-toast" id="copyToast">
+		<i class="fa-solid fa-check"></i>
+		Code gekopieerd naar klembord
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () { // Code kopieerfunctionaliteit
+const copyBtn = document.querySelector('.copy-code-btn');
+const toast = document.getElementById('copyToast');
+
+if (copyBtn) {
+copyBtn.addEventListener('click', function (e) {
+e.preventDefault();
+const codeBlock = document.querySelector('.post-content code');
+
+if (codeBlock) {
+const textToCopy = codeBlock.textContent;
+navigator.clipboard.writeText(textToCopy).then(function () { // Toon toast
+toast.classList.add('show');
+setTimeout(function () {
+toast.classList.remove('show');
+}, 2000);
+});
+}
+});
+}
+});
+	</script>
+{% endblock %}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="nl">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>
+			{% block title %}Binsta
+			{% endblock %}
+		</title>
+		<link rel="stylesheet" href="/css/styles.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+	</head>
+	<body>
+		{% if session.user_id %}
+			<!-- Modern Desktop Sidebar -->
+			<div class="sidebar">
+				<a href="/" class="sidebar-logo">
+					<span class="brand-icon">
+						<i class="fa-solid fa-code"></i>
+					</span>
+					<span>Binsta</span>
+				</a>
+
+				<nav class="sidebar-nav">
+					<a href="/" class="nav-item {{ app.request.pathInfo == '/' ? 'active' : '' }}">
+						<span class="nav-icon">
+							<i class="fa-solid fa-house"></i>
+						</span>
+						<span class="nav-text">Home</span>
+					</a>
+					<a href="/search" class="nav-item {{ app.request.pathInfo starts with '/search' ? 'active' : '' }}">
+						<span class="nav-icon">
+							<i class="fa-solid fa-magnifying-glass"></i>
+						</span>
+						<span class="nav-text">Zoeken</span>
+					</a>
+					<a href="/posts/create" class="nav-item {{ app.request.pathInfo == '/posts/create' ? 'active' : '' }}">
+						<span class="nav-icon">
+							<i class="fa-solid fa-plus"></i>
+						</span>
+						<span class="nav-text">Code delen</span>
+					</a>
+					<a href="/profile" class="nav-item {{ app.request.pathInfo starts with '/profile' ? 'active' : '' }}">
+						<span class="nav-icon">
+							<i class="fa-solid fa-user"></i>
+						</span>
+						<span class="nav-text">Profiel</span>
+					</a>
+					<form action="/logout" method="post" class="logout-form">
+						<button type="submit" class="nav-item logout-button">
+							<span class="nav-icon">
+								<i class="fa-solid fa-sign-out-alt"></i>
+							</span>
+							<span class="nav-text">Uitloggen</span>
+						</button>
+					</form>
+				</nav>
+			</div>
+
+			<!-- Mobile Navigation -->
+			<nav class="navbar">
+				<div class="container">
+					<a href="/" class="navbar-brand">
+						<span class="brand-icon">
+							<i class="fa-solid fa-code"></i>
+						</span>
+						Binsta
+					</a>
+
+					<div class="search-bar">
+						<form action="/search" method="get">
+							<div class="search-wrapper">
+								<i class="fa-solid fa-magnifying-glass search-icon"></i>
+								<input type="text" name="q" placeholder="Zoeken" value="{{ query|default('') }}">
+							</div>
+						</form>
+					</div>
+
+					<div class="navbar-menu">
+						<a href="/" class="nav-link" title="Home">
+							<i class="fa-solid fa-house"></i>
+						</a>
+						<a href="/posts/create" class="nav-link" title="Code delen">
+							<i class="fa-solid fa-plus"></i>
+						</a>
+						<a href="/search" class="nav-link" title="Ontdekken">
+							<i class="fa-solid fa-compass"></i>
+						</a>
+						<a href="/profile" class="nav-link" title="Mijn profiel">
+							<i class="fa-solid fa-user"></i>
+						</a>
+						<form action="/logout" method="post" class="logout-form">
+							<button type="submit" class="nav-link logout-button" title="Uitloggen">
+								<i class="fa-solid fa-sign-out-alt"></i>
+							</button>
+						</form>
+					</div>
+				</div>
+			</nav>
+		{% endif %}
+
+		<div class="main-content"> {% block content %}{% endblock %}
+			</div>
+
+			<script>
+				document.addEventListener('DOMContentLoaded', () => { // Highlight.js voor code snippets
+document.querySelectorAll('pre code').forEach((block) => {
+hljs.highlightBlock(block);
+});
+
+// Afbeeldingsfoutafhandeling - vervangt ontbrekende afbeeldingen met de standaard placeholder
+document.querySelectorAll('img').forEach(img => {
+img.onerror = function () {
+if (!this.src.includes('/uploads/  {{ DEFAULT_PROFILE_IMAGE }}')) {
+this.src = '/uploads/  {{ DEFAULT_PROFILE_IMAGE }}';
+}
+};
+});
+
+// Voeg 'language-badge' toe aan code blokken
+document.querySelectorAll('.post-content').forEach(content => {
+const codeBlock = content.querySelector('code');
+if (codeBlock) {
+const language = codeBlock.className.replace('language-', '').replace('hljs', '').trim();
+if (language) {
+const badge = document.createElement('div');
+badge.className = 'language-badge';
+badge.textContent = language;
+content.appendChild(badge);
+}
+}
+});
+});
+			</script>
+			<script src="/js/scripts.js"></script>
+		</body>
+	</html>

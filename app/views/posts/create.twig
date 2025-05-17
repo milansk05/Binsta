@@ -1,0 +1,136 @@
+{% extends "layout.twig" %}
+
+{% block title %}Code Delen - Binsta
+{% endblock %}
+
+{% block content %}
+	<div class="create-post">
+		<h1>
+			<i class="fa-solid fa-code"></i>
+			Code Delen</h1>
+
+		{% if error %}
+			<div class="alert alert-danger">
+				<i class="fa-solid fa-circle-exclamation"></i>
+				{{ error }}
+			</div>
+		{% endif %}
+
+		<form action="/posts/create" method="post" class="post-form">
+			<div class="form-group">
+				<label for="language">Programmeertaal</label>
+				<select name="language" id="language" class="language-select" required>
+					<option value="">Selecteer Taal</option>
+					<option value="javascript" {{ language == 'javascript' ? 'selected' : '' }}>JavaScript</option>
+					<option value="php" {{ language == 'php' ? 'selected' : '' }}>PHP</option>
+					<option value="python" {{ language == 'python' ? 'selected' : '' }}>Python</option>
+					<option value="java" {{ language == 'java' ? 'selected' : '' }}>Java</option>
+					<option value="csharp" {{ language == 'csharp' ? 'selected' : '' }}>C#</option>
+					<option value="cpp" {{ language == 'cpp' ? 'selected' : '' }}>C++</option>
+					<option value="ruby" {{ language == 'ruby' ? 'selected' : '' }}>Ruby</option>
+					<option value="go" {{ language == 'go' ? 'selected' : '' }}>Go</option>
+					<option value="swift" {{ language == 'swift' ? 'selected' : '' }}>Swift</option>
+					<option value="kotlin" {{ language == 'kotlin' ? 'selected' : '' }}>Kotlin</option>
+					<option value="sql" {{ language == 'sql' ? 'selected' : '' }}>SQL</option>
+					<option value="html" {{ language == 'html' ? 'selected' : '' }}>HTML</option>
+					<option value="css" {{ language == 'css' ? 'selected' : '' }}>CSS</option>
+					<option value="bash" {{ language == 'bash' ? 'selected' : '' }}>Bash</option>
+					<option value="json" {{ language == 'json' ? 'selected' : '' }}>JSON</option>
+					<option value="xml" {{ language == 'xml' ? 'selected' : '' }}>XML</option>
+					<option value="typescript" {{ language == 'typescript' ? 'selected' : '' }}>TypeScript</option>
+					<option value="rust" {{ language == 'rust' ? 'selected' : '' }}>Rust</option>
+				</select>
+			</div>
+
+			<div class="form-group code-form-group">
+				<label for="code">Code Snippet</label>
+				<div class="code-editor-wrapper">
+					<textarea name="code" id="code" class="code-editor" placeholder="// Plaats hier je code" required>{{ code|default('') }}</textarea>
+					<div class="editor-controls">
+						<button type="button" class="editor-btn" id="indentCode" title="Indenteer code">
+							<i class="fa-solid fa-indent"></i>
+						</button>
+						<button type="button" class="editor-btn" id="wrapLines" title="Regels omslaan">
+							<i class="fa-solid fa-align-left"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="caption">Beschrijving</label>
+				<textarea name="caption" id="caption" rows="3" placeholder="Vertel iets over je code...">{{ caption|default('') }}</textarea>
+			</div>
+
+			<div class="form-group submit-group">
+				<button type="submit" class="btn btn-primary">
+					<i class="fa-solid fa-share"></i>
+					Delen
+				</button>
+				<a href="/" class="btn btn-secondary">Annuleren</a>
+			</div>
+		</form>
+
+		<div class="code-tips">
+			<h3>Tips voor het delen van je code</h3>
+			<ul>
+				<li>Zorg ervoor dat je code netjes geformatteerd is voor betere leesbaarheid</li>
+				<li>Voeg eventueel commentaar toe om je code toe te lichten</li>
+				<li>Deel korte, nuttige snippets die anderen kunnen hergebruiken</li>
+				<li>Vergeet niet de juiste programmeertaal te selecteren voor correcte syntax highlighting</li>
+			</ul>
+		</div>
+	</div>
+{% endblock %}
+
+{% block scripts %}
+	<script>
+		document.addEventListener('DOMContentLoaded', function () { // Eenvoudige editor verbeteringen
+const codeEditor = document.getElementById('code');
+const indentBtn = document.getElementById('indentCode');
+const wrapBtn = document.getElementById('wrapLines');
+
+if (indentBtn) {
+indentBtn.addEventListener('click', function () { // Voeg 2 spaties toe aan het begin van elke regel
+const selection = codeEditor.selectionStart;
+const lines = codeEditor.value.split('\n');
+const indentedLines = lines.map(line => '  ' + line);
+codeEditor.value = indentedLines.join('\n');
+codeEditor.focus();
+
+// Probeer de cursor positie te behouden
+try {
+codeEditor.selectionStart = codeEditor.selectionEnd = selection + 2;
+} catch (e) {}
+});
+}
+
+if (wrapBtn) {
+wrapBtn.addEventListener('click', function () {
+codeEditor.classList.toggle('wrap-text');
+if (codeEditor.classList.contains('wrap-text')) {
+codeEditor.style.whiteSpace = 'pre-wrap';
+wrapBtn.title = 'Uitschakelen regelomslag';
+} else {
+codeEditor.style.whiteSpace = 'pre';
+wrapBtn.title = 'Regels omslaan';
+}
+});
+}
+
+// Tab toets ondersteuning in de code editor
+if (codeEditor) {
+codeEditor.addEventListener('keydown', function (e) {
+if (e.key === 'Tab') {
+e.preventDefault();
+const start = this.selectionStart;
+const end = this.selectionEnd;
+
+this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+this.selectionStart = this.selectionEnd = start + 2;
+}
+});
+}
+});
+	</script>
+{% endblock %}

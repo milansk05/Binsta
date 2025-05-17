@@ -1,0 +1,109 @@
+{% extends "layout.twig" %}
+
+{% block title %}
+	{{ profile.username }}
+	- Binsta
+{% endblock %}
+
+{% block content %}
+	<div
+		class="profile">
+		<!-- Profiel header -->
+		<div class="profile-header">
+			<div class="profile-image-container">
+				<img src="/uploads/{{ profile.profile_image }}" alt="{{ profile.username }}" class="profile-image" onerror="this.src='/uploads/{{ DEFAULT_PROFILE_IMAGE }}';">
+			</div>
+
+			<div class="profile-info">
+				<div class="profile-header-top">
+					<h1 class="profile-username">{{ profile.username }}</h1>
+					{% if profile.id == session.user_id %}
+						<a href="/profile/edit" class="btn btn-secondary">Profiel bewerken</a>
+					{% endif %}
+				</div>
+				<div class="profile-stats">
+					<div class="stat">
+						<span class="stat-count">{{ postCount }}</span>
+						<span class="stat-label">posts</span>
+					</div>
+				</div>
+
+				{% if profile.bio %}
+					<div class="profile-bio">
+						{{ profile.bio|nl2br }}
+					</div>
+				{% endif %}
+			</div>
+		</div>
+		<!-- Taalstatistieken (alleen voor eigen profiel) -->
+		{% if profile.id == session.user_id and postCount > 0 %}
+			<div class="language-stats">
+				<h2 class="section-title">Jouw talen</h2>
+				<div
+					class="language-stats-bars">
+					<!-- We bepalen de talen en hun aantallen -->
+					{% set languages = {} %}
+					{% for post in posts %}
+						{% if post.language in languages|keys %}
+							{% set languages = languages|merge({(post.language): languages[post.language] + 1}) %}
+						{% else %}
+							{% set languages = languages|merge({(post.language): 1}) %}
+						{% endif %}
+					{% endfor %}
+
+					<!-- Voor elke taal tonen we een statistiek balk -->
+					{% for language, count in languages %}
+						{% set percentage = (count / postCount * 100)|round %}
+						<div class="language-stat">
+							<div class="language-name">{{ language }}</div>
+							<div class="language-bar-container">
+								<div class="language-bar" style="width: {{ percentage }}%"></div>
+								<span class="language-percentage">{{ percentage }}%</span>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		{% endif %}
+		<!-- Posts sectie -->
+		<h2 class="section-title">Posts
+			<span class="post-count">({{ postCount }})</span>
+		</h2>
+		{% if postCount > 0 %}
+			<div class="profile-posts">
+				{% for post in posts %}
+					<div class="profile-post">
+						<a href="/posts/{{ post.id }}">
+							<div class="post-preview">
+								<pre><code class="{{ post.language }}">{{ post.code|slice(0, 100) }}...{% endif %}</code></pre> {% if post.code|length > 100 %}
+								<div class="post-meta">
+									<span class="post-language">{{ post.language }}</span>
+									<div class="post-meta-stats">
+										<span class="post-meta-likes">
+											<i class="fa-solid fa-heart"></i>
+											{{ post.id }}</span>
+										<span class="post-time">{{ post.created_at|date("j M Y") }}</span>
+									</div>
+								</div>
+							</div>
+						</a>
+					</div>
+				{% endfor %}
+			</div>
+		{% else %}
+			<div class="no-posts">
+				<div class="empty-state">
+					<i class="fa-solid fa-code fa-3x"></i>
+					<h3>Nog geen posts</h3>
+					{% if profile.id == session.user_id %}
+						<p>Deel je eerste code snippet!</p>
+						<a href="/posts/create" class="btn btn-primary">Code delen</a>
+					{% else %}
+						<p>{{ profile.username }}
+							heeft nog geen code gedeeld.</p>
+					{% endif %}
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}

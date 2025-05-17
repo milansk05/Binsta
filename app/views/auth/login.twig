@@ -1,0 +1,78 @@
+{% extends "layout.twig" %}
+
+{% block title %}Inloggen - Binsta
+{% endblock %}
+
+{% block content %}
+	<div class="auth-container">
+		<div class="auth-form">
+			<h1 class="logo">
+				<i class="fa-solid fa-code"></i>
+				Binsta
+			</h1>
+
+			<div class="auth-intro">
+				<p>Deel je mooiste code snippets en ontdek wat andere ontwikkelaars maken</p>
+			</div>
+
+			{% if error %}
+				<div class="alert alert-danger">
+					<i class="fa-solid fa-circle-exclamation"></i>
+					{{ error }}
+				</div>
+			{% endif %}
+
+			<form action="/login" method="post">
+				<div class="form-group">
+					<label for="email">E-mailadres</label>
+					<div class="input-with-icon">
+						<i class="fa-solid fa-envelope input-icon"></i>
+						<input type="email" name="email" id="email" placeholder="jouw@email.nl" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="password">Wachtwoord</label>
+					<div class="input-with-icon">
+						<i class="fa-solid fa-lock input-icon"></i>
+						<input type="password" name="password" id="password" placeholder="••••••••" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-block">Inloggen</button>
+				</div>
+			</form>
+
+			<div class="auth-divider">
+				<span>of</span>
+			</div>
+
+			<div class="auth-links">
+				<p>Nog geen account?
+					<a href="/register" class="accent-link">Registreren</a>
+				</p>
+			</div>
+
+			<div class="auth-footer">
+				<p class="auth-footer-text">Door in te loggen ga je akkoord met onze voorwaarden en privacybeleid.</p>
+			</div>
+		</div>
+
+		<div class="auth-features">
+			<div class="feature">
+				<i class="fa-solid fa-code feature-icon"></i>
+				<h3>Deel code in stijl</h3>
+				<p>Presenteer je code met prachtige syntax highlighting in meer dan 15 programmeertalen.</p>
+			</div>
+			<div class="feature">
+				<i class="fa-solid fa-users feature-icon"></i>
+				<h3>Verbind met ontwikkelaars</h3>
+				<p>Vind en volg andere programmeurs, ontdek nieuwe technieken en krijg feedback.</p>
+			</div>
+			<div class="feature">
+				<i class="fa-solid fa-lightbulb feature-icon"></i>
+				<h3>Inspireer & Leer</h3>
+				<p>Ontdek nieuwe programmeeroplossingen en deel je kennis met de community.</p>
+			</div>
+		</div>
+	</div>
+{% endblock %}

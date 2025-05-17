@@ -1,0 +1,40 @@
+{% extends "layout.twig" %}
+
+{% block title %}Search - Binsta
+{% endblock %}
+
+{% block content %}
+	<div class="search-results">
+		<h1>Search Results</h1>
+
+		<div class="search-form">
+			<form action="/search" method="get">
+				<input type="text" name="q" placeholder="Search users" value="{{ query }}">
+				<button type="submit" class="btn btn-primary">Search</button>
+			</form>
+		</div>
+
+		<div class="results-list">
+			{% for user in results %}
+				<div class="user-item">
+					<a href="/profile?id={{ user.id }}" class="user-info">
+						<img src="/uploads/{{ user.profile_image }}" alt="{{ user.username }}" class="avatar">
+						<div class="user-details">
+							<div class="username">{{ user.username }}</div>
+							<div class="bio">{{ user.bio|slice(0, 100) }}
+								{% if user.bio|length > 100 %}...
+								{% endif %}
+							</div>
+						</div>
+					</a>
+				</div>
+			{% else %}
+				{% if query %}
+					<div class="no-results">
+						<p>No users found matching "{{ query }}".</p>
+					</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

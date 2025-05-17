@@ -1,0 +1,92 @@
+{% extends "layout.twig" %}
+
+{% block title %}Home - Binsta
+{% endblock %}
+
+{% block content %}
+	<div class="feed">
+		{% for post in posts %}
+			{% set user = post.user %}
+			{% set likes = post.getLikes() %}
+			{% set comments = post.countOwn('comment') %}
+
+			<div class="post">
+				<div class="post-header">
+					<a href="/profile?id={{ user.id }}" class="user-info">
+						<img src="/uploads/{{ user.profile_image }}" alt="{{ user.username }}" class="avatar" onerror="this.src='/uploads/{{ DEFAULT_PROFILE_IMAGE }}';">
+						<div class="user-details">
+							<span class="username">{{ user.username }}</span>
+							<span class="post-timestamp">{{ post.created_at|date("d M Y, H:i") }}</span>
+						</div>
+					</a>
+					<div class="post-language-tag">{{ post.language }}</div>
+				</div>
+
+				<div class="post-content">
+					<pre><code class="{{ post.language }}">{{ post.code }}</code></pre>
+				</div>
+
+				<div class="post-actions-bar">
+					<div class="post-action">
+						<form action="/posts/like" method="post" class="like-form">
+							<input type="hidden" name="post_id" value="{{ post.id }}">
+							<button type="submit" class="btn-like{% if post.isLikedByUser(session.user_id) %} liked{% endif %}">
+								<i class="fa-solid fa-heart"></i>
+							</button>
+						</form>
+						<span class="likes-count">{{ likes }}</span>
+					</div>
+
+					<div class="post-action">
+						<a href="/posts/{{ post.id }}" class="comment-link">
+							<i class="fa-solid fa-comment post-action-icon"></i>
+							<span class="post-action-count">{{ comments }}</span>
+						</a>
+					</div>
+
+					<div class="post-action">
+						<a href="#" class="code-options" title="Code opties">
+							<i class="fa-solid fa-code post-action-icon"></i>
+						</a>
+					</div>
+				</div>
+
+				<div class="post-footer">
+					{% if post.caption %}
+						<div class="post-caption">
+							<strong>{{ user.username }}</strong>
+							{{ post.caption }}
+						</div>
+					{% endif %}
+
+					<div class="post-comments">
+						{% if comments > 0 %}
+							<a href="/posts/{{ post.id }}" class="view-comments">
+								Bekijk alle
+								{{ comments }}
+								reactie
+								{% if comments != 1 %}s
+								{% endif %}
+							</a>
+						{% endif %}
+
+						<form action="/comments/create" method="post" class="comment-form">
+							<input type="hidden" name="post_id" value="{{ post.id }}">
+							<input type="text" name="content" placeholder="Plaats een reactie...">
+							<button type="submit">Plaatsen</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		{% else %}
+			<div class="no-posts">
+				<div class="empty-state">
+					<i class="fa-solid fa-code fa-3x"></i>
+					<h2>Nog geen posts</h2>
+					<p>Volg gebruikers of maak je eerste code snippet!</p>
+					<a href="/posts/create" class="btn btn-primary">Code delen</a>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}

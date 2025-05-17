@@ -1,0 +1,63 @@
+{% extends "layout.twig" %}
+
+{% block title %}Profiel bewerken - Binsta
+{% endblock %}
+
+{% block content %}
+	<div class="edit-profile">
+		<h1>Profiel bewerken</h1>
+
+		{% if error %}
+			<div class="alert alert-danger">{{ error }}</div>
+		{% endif %}
+
+		<div class="edit-profile-section">
+			<h2>Profielinformatie</h2>
+			<form action="/profile/update" method="post" enctype="multipart/form-data" class="profile-form">
+				<div class="form-group">
+					<label for="username">Gebruikersnaam</label>
+					<input type="text" name="username" id="username" value="{{ user.username }}" required>
+				</div>
+
+				<div class="form-group">
+					<label for="bio">Bio</label>
+					<textarea name="bio" id="bio" rows="4">{{ user.bio }}</textarea>
+					<small class="form-text">Vertel iets over jezelf</small>
+				</div>
+
+				<div class="form-group">
+					<label for="profile_image">Profielfoto</label>
+					<div class="current-photo">
+						<img src="/uploads/{{ user.profile_image }}" alt="{{ user.username }}" class="profile-image-preview">
+					</div>
+					<input type="file" name="profile_image" id="profile_image" accept="image/*">
+					<small class="form-text">Upload een nieuwe foto (JPG, PNG)</small>
+				</div>
+
+				<button type="submit" class="btn btn-primary">Opslaan</button>
+			</form>
+		</div>
+
+		<div class="edit-profile-section">
+			<h2>Wachtwoord wijzigen</h2>
+			<form action="/profile/password" method="post" class="password-form">
+				<div class="form-group">
+					<label for="current_password">Huidig wachtwoord</label>
+					<input type="password" name="current_password" id="current_password" required>
+				</div>
+
+				<div class="form-group">
+					<label for="new_password">Nieuw wachtwoord</label>
+					<input type="password" name="new_password" id="new_password" required>
+				</div>
+
+				<div class="form-group">
+					<label for="confirm_password">Bevestig nieuw wachtwoord</label>
+					<input type="password" name="confirm_password" id="confirm_password" required>
+				</div>
+
+				<button type="submit" class="btn btn-primary">Wachtwoord wijzigen</button>
+			</form>
+		</div>
+	</div>
+{% endblock %}
