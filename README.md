@@ -16,8 +16,6 @@ Binsta is een socialmediaplatform waar programmeurs hun code snippets kunnen del
 - [Frontend Functionaliteiten](#-frontend-functionaliteiten)
 - [Testgebruikers](#-testgebruikers)
 - [Bekend Issues & Beperkingen](#-bekende-issues--beperkingen)
-- [Toekomstige Uitbreidingen](#-toekomstige-uitbreidingen)
-- [License](#-license)
 
 ## 🌟 Features
 
