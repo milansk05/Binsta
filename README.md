@@ -434,18 +434,3 @@ Bij gebruik van de seeder worden deze testgebruikers aangemaakt:
 2. **Beperkte foutafhandeling**: Sommige foutmeldingen zijn generiek.
 3. **Geen paginering**: De feed toont maximaal 20 posts zonder paginering.
 4. **Beperkte zoekfunctionaliteit**: Alleen zoeken op gebruikersnaam, niet op code of taal.
-
-## 🚀 Toekomstige Uitbreidingen?
-
-Potentiële verbeteringen voor het project:
-
-1. **Volgsysteem**: Gebruikers kunnen elkaar volgen voor een gepersonaliseerde feed
-2. **Geavanceerde code editor**: Met linting en syntax checking
-3. **Tagging systeem**: Voor betere categorisering van code snippets
-4. **Verbeterde zoekfunctionaliteit**: Zoeken op code inhoud, taal of tags
-5. **Code uitvoeren**: Mogelijkheid om code direct in de browser uit te voeren
-6. **Versiecontrole**: Bijhouden van wijzigingen in code snippets
-7. **Privé posts**: Mogelijkheid om code privé te delen
-8. **API integratie**: Voor toegang via externe tools
-9. **Gebruikersrollen**: Admin, moderator, etc.
-10. **Twee-factor authenticatie**: Voor verbeterde beveiliging
